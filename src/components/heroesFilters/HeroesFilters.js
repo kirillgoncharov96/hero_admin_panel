@@ -56,11 +56,6 @@ const HeroesFilters = () => {
                 <p className="card-text">Отфильтруйте героев по элементам</p>
                 <div className="btn-group">
                     {elements}
-                    {/* <button className="btn btn-outline-dark active">Все</button>
-                    <button className="btn btn-danger">Огонь</button>
-                    <button className="btn btn-primary">Вода</button>
-                    <button className="btn btn-success">Ветер</button>
-                    <button className="btn btn-secondary">Земля</button> */}
                 </div>
             </div>
         </div>

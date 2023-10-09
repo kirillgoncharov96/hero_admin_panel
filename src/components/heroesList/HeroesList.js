@@ -2,9 +2,10 @@ import {useHttp} from '../../hooks/http.hook';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { heroesFetching, heroesFetched, heroesFetchingError, heroesDelete } from '../../actions';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
-
+import './heroList.scss';
 
 
 const HeroesList = () => {
@@ -39,19 +40,28 @@ const HeroesList = () => {
 
     const renderHeroesList = (arr) => {
         if (arr.length === 0) {
-            return <h5 className="text-center mt-5">Героев пока нет</h5>
+
+            return (    
+                <CSSTransition classNames="hero" timeout={0}>
+                    <h5 className="text-center mt-5">Героев пока нет</h5>
+                </CSSTransition>
+            )
         }
        
         return arr.map(({id, ...props}) => {
-            return <HeroesListItem key={id} {...props} onDelete={() => onDelete(id)}/>
+            return (
+                <CSSTransition key={id} timeout={500} classNames="hero">
+                    <HeroesListItem {...props} onDelete={() => onDelete(id)}/> 
+                </CSSTransition>  
+            ) 
         })
     }
 
     const elements = renderHeroesList(filterHeroes);
     return (
-        <ul>
+        <TransitionGroup component="ul">
             {elements}
-        </ul>
+        </TransitionGroup>
     )
 }
 
