@@ -1,3 +1,6 @@
+
+![demo](demo/demo_admin-panel.gif)
+
 ```bash
 # This is test project with hero admin panel!
 
