@@ -1,15 +1,41 @@
 import {useHttp} from '../../hooks/http.hook';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { heroesFetching, heroesFetched, heroesFetchingError, heroesDelete } from '../../actions';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { createSelector } from 'reselect';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 import './heroList.scss';
 
 
 const HeroesList = () => {
-    const {filterHeroes, heroesLoadingStatus} = useSelector(state => state);
+
+    const filteredHeroesSelector = createSelector(
+        (state) => state.filters.activeFilter,
+        (state) => state.heroes.heroes,
+        (activeFilter, heroes) => {
+            if (activeFilter === 'all') {
+                
+                return heroes;
+            } else {
+                return heroes.filter((item) => item.element === activeFilter)
+            }
+        }
+
+    );
+    
+    //Second var
+    // const filterHeroes = useSelector(state => {
+    //     if (state.activeFilter === 'all') {
+    //         return state.heroes.heroes;
+    //     } else {
+    //         return state.heroes.heroes.filter((item) => item.element === state.filters.activeFilter)
+    //     }
+    // })
+
+    const filterHeroes = useSelector(filteredHeroesSelector);
+    const heroesLoadingStatus = useSelector(state => state.heroesLoadingStatus);
     const dispatch = useDispatch();
     const {request} = useHttp();
     
@@ -21,16 +47,15 @@ const HeroesList = () => {
 
         // eslint-disable-next-line
     }, []);
-
-    const onDelete = useCallback((id) => {
-        
+    
+    const onDelete = (id) => {
+       
         request(`http://localhost:3001/heroes/${id}`, "DELETE")
             .then(data => console.log(data, 'Deleted'))
             .then(dispatch(heroesDelete(id)))
             .catch(error => console.log(error))
         
-        // eslint-disable-next-line
-    }, [request])
+    };
 
     if (heroesLoadingStatus === "loading") {
         return <Spinner/>;
@@ -38,6 +63,7 @@ const HeroesList = () => {
         return <h5 className="text-center mt-5">Ошибка загрузки</h5>
     }
 
+    
     const renderHeroesList = (arr) => {
         if (arr.length === 0) {
 

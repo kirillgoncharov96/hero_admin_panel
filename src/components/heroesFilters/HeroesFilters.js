@@ -3,14 +3,17 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 
+
 import { filtersFetching, filtersFetched, filtersFetchingError, activeFilterChanged } from "../../actions";
 import Spinner from "../spinner/Spinner";
 
 
 const HeroesFilters = () => {
-    const {filters, filtersLoadingStatus, activeFilter} = useSelector(state => state);
+    const {filters, filtersLoadingStatus, activeFilter} = useSelector(state => state.filters);
     const dispatch = useDispatch();
     const {request} = useHttp();
+
+    
 
     useEffect(() => {
         dispatch(filtersFetching());
@@ -28,6 +31,7 @@ const HeroesFilters = () => {
     }
 
     const renderFilters = (filters) => {
+
         if (filters.length === 0) {
             return <h5 className="text-center mt-5">Фильтры не найдены</h5>
         }

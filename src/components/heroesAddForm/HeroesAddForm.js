@@ -10,7 +10,7 @@ const HeroesAddForm = () => {
     const [heroName, setHeroName] = useState('');
     const [heroDescr, setHeroDescr] = useState('');
     const [heroElement, setHeroElement] = useState('');
-    const {filters, filtersLoadingStatus } = useSelector(state => state);
+    const {filters, filtersLoadingStatus } = useSelector(state => state.filters);
     
     const dispatch = useDispatch();
     const {request} = useHttp();
@@ -58,7 +58,7 @@ const HeroesAddForm = () => {
     }
 
     const renderFilters = (filters, status) => {
-       console.log('render')
+       
         if (status === 'loading') {
             return <option value="loading">Loading...</option>
         } else if (status === 'error') {
