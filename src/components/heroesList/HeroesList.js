@@ -1,7 +1,7 @@
 import {useHttp} from '../../hooks/http.hook';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { heroesFetching, heroesFetched, heroesFetchingError, heroesDelete } from '../../actions';
+import { fetchHeroes, heroesDelete } from '../../actions';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { createSelector } from 'reselect';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
@@ -16,7 +16,6 @@ const HeroesList = () => {
         (state) => state.heroes.heroes,
         (activeFilter, heroes) => {
             if (activeFilter === 'all') {
-                
                 return heroes;
             } else {
                 return heroes.filter((item) => item.element === activeFilter)
@@ -35,26 +34,25 @@ const HeroesList = () => {
     // })
 
     const filterHeroes = useSelector(filteredHeroesSelector);
-    const heroesLoadingStatus = useSelector(state => state.heroesLoadingStatus);
+    const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
     const dispatch = useDispatch();
     const {request} = useHttp();
     
     useEffect(() => {
-        dispatch(heroesFetching());
-        request("http://localhost:3001/heroes")
-            .then(data => dispatch(heroesFetched(data)))
-            .catch(() => dispatch(heroesFetchingError()))
+        dispatch(fetchHeroes(request));
 
         // eslint-disable-next-line
     }, []);
     
-    const onDelete = (id) => {
+    const onDelete = useCallback((id) => {
+        console.log('delete')
         request(`http://localhost:3001/heroes/${id}`, "DELETE")
             .then(data => console.log(data, 'Deleted'))
-            .then(dispatch(heroesDelete(id)))
+            .then(() => dispatch(heroesDelete(id)))
             .catch(error => console.log(error))
-        
-    };
+
+    // eslint-disable-next-line
+    }, [request, dispatch]);
 
     if (heroesLoadingStatus === "loading") {
         return <Spinner/>;
@@ -83,6 +81,7 @@ const HeroesList = () => {
     }
 
     const elements = renderHeroesList(filterHeroes);
+    console.log('renderherolist')
     return (
         <TransitionGroup component="ul">
             {elements}

@@ -1,6 +1,8 @@
+import { memo } from "react";
+
 
 const HeroesListItem = ({name, description, element, onDelete}) => {
-
+    console.log('herolistitem')
     let elementClassName;
 
     switch (element) {
@@ -39,4 +41,4 @@ const HeroesListItem = ({name, description, element, onDelete}) => {
     )
 }
 
-export default HeroesListItem;
+export default memo(HeroesListItem);
